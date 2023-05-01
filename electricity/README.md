@@ -22,7 +22,7 @@ Tasmota.
 I found this not to work with the DTZ541-ZDBA (two tarriff counter).
 
 <p align="center">
-  <img src="power_meter.jpg?raw=true" alt="Power meter with IR comm head and ESP32 DevKitC"/>
+  <img src="images/power_meter.jpg?raw=true" alt="Power meter with IR comm head and ESP32 DevKitC"/>
 </p>
 
 
@@ -39,6 +39,6 @@ I have added my YAML file from that experiment and I have also designed a
 [custom magentic holder for the IR head with an ESP01](https://www.printables.com/model/454754-dtz541-ir-head-magnet-mount-esp01).
 
 <p align="center">
-  <img src="power_meter_esp01.jpg?raw=true" alt="Power meter ESP01 head"/>
+  <img src="images/power_meter_esp01.jpg?raw=true" alt="Power meter ESP01 head"/>
 </p>
 

@@ -15,7 +15,7 @@ I use an ESP8266 based D1 Mini Pro in a
 This configuration uses only built-in ESPHome capabilities.
 
 <p align="center">
-  <img src="water_meter.jpg?raw=true" alt="Water meter with inductive sensor and D1 Mini Pro"/>
+  <img src="images/water_meter.jpg?raw=true" alt="Water meter with inductive sensor and D1 Mini Pro"/>
 </p>
 
 Board Schematic
@@ -26,6 +26,11 @@ just wiring up the connector. I have used a angled pin header soldered into
 the second row of holes.
 
 <p align="center">
-  <img src="mini_tin_3pin_connector.png?raw=true" alt="Small mint tin perma-proto connections"/>
+  <img src="images/mini_tin_3pin_connector.png?raw=true" alt="Small mint tin perma-proto connections"/>
+</p>
+
+<p float="left" align="center">
+  <img src="images/board_top.jpg" />
+  <img src="images/board_bottom.jpg" />
 </p>
 

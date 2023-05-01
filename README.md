@@ -8,7 +8,7 @@ some customization. In either case, maybe these files can serve as a useful
 example.
 
 <p float="left">
-  <a href="gas"><img src="gas/gas_meter.jpg" width="250" /></a>
-  <a href="electricity"><img src="electricity/power_meter.jpg" width="250" /></a>
-  <a href="water"><img src="water/water_meter.jpg" width="250" /></a>
+  <a href="gas"><img src="gas/images/gas_meter.jpg" width="250" /></a>
+  <a href="electricity"><img src="electricity/images/power_meter.jpg" width="250" /></a>
+  <a href="water"><img src="water/images/water_meter.jpg" width="250" /></a>
 </p>
