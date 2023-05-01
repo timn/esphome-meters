@@ -25,6 +25,17 @@ I found this not to work with the DTZ541-ZDBA (two tarriff counter).
   <img src="images/power_meter.jpg?raw=true" alt="Power meter with IR comm head and ESP32 DevKitC"/>
 </p>
 
+Board Layout
+------------
+The following photos show the used wiring. This really is about having headers
+to hold the ESP32 DevKitc board and a 4 pin connector for the IR head.
+
+<p align="center">
+  <img src="images/board_bottom.jpg" />
+</p>
+<p align="center">
+  <img src="images/board_top.jpg" />
+</p>
 
 ESP01-1M Configuration
 ----------------------
