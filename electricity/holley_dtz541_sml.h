@@ -16,6 +16,30 @@ static const char kVoltage[] = "voltage";
 static const char kCurrent[] = "current";
 static const char kFrequency[] = "frequency";
 
+static const char kEnergyIn[] = "Energy In";
+static const char kEnergyOut[] = "Energy Out";
+static const char kActivePower[] = "Active Power";
+static const char kVoltageL1[] = "Voltage L1";
+static const char kVoltageL2[] = "Voltage L2";
+static const char kVoltageL3[] = "Voltage L3";
+static const char kAmperageL1[] = "Amperage L1";
+static const char kAmperageL2[] = "Amperage L2";
+static const char kAmperageL3[] = "Amperage L3";
+static const char kFrequencySensor[] = "Frequency";
+static const char kInvalidData[] = "Invalid Data";
+
+static const char kEnergyInObjId[] = "energy_in";
+static const char kEnergyOutObjId[] = "energy_out";
+static const char kActivePowerObjId[] = "active_power";
+static const char kVoltageL1ObjId[] = "voltage_l1";
+static const char kVoltageL2ObjId[] = "voltage_l2";
+static const char kVoltageL3ObjId[] = "voltage_l3";
+static const char kAmperageL1ObjId[] = "amperage_l1";
+static const char kAmperageL2ObjId[] = "amperage_l2";
+static const char kAmperageL3ObjId[] = "amperage_l3";
+static const char kFrequencySensorObjId[] = "frequency";
+static const char kInvalidDataObjId[] = "invalid_data";
+
 uint8_t *SkipField(uint8_t *cp) {
 	uint8_t len = *cp & 0xf;
 	uint8_t type = *cp & 0x70;
@@ -246,11 +270,12 @@ class HolleyDtz541SmlComponent : public Component, public UARTDevice {
 	HolleyDtz541SmlComponent(UARTComponent *parent) : UARTDevice(parent),
 	                                                  end_marker_(StringToHex("1b1b1b1b1a")),
 	                                                  end_marker_view_(end_marker_) {
+ 
 		// Would need exposing a text sensor
 		// {"77070100600100ff", "server_id" },
 	  specs_ = {
 		  {"77070100010800ff", /*scaler=*/-3,
-		   CreateSensor("Energy In", kkWh, kEnergy, STATE_CLASS_TOTAL_INCREASING, 4),
+		   CreateSensor(kEnergyIn, kEnergyInObjId, kkWh, kEnergy, STATE_CLASS_TOTAL_INCREASING, 4),
 		   /*max_expected_change=*/0.005, // 18 kWh
 		   [this](const SmlValue& status, SmlValue& value) {
 			   if (status.Is<uint64_t>()) {
@@ -262,10 +287,10 @@ class HolleyDtz541SmlComponent : public Component, public UARTDevice {
 			   }
 		   }},
 		  {"77070100020800ff", /*scaler=*/-3,
-		   CreateSensor("Energy Out", kkWh, kEnergy, STATE_CLASS_TOTAL_INCREASING, 4),
+		   CreateSensor(kEnergyOut, kEnergyOutObjId, kkWh, kEnergy, STATE_CLASS_TOTAL_INCREASING, 4),
 		   /*max_expected_change=*/0.005}, // 18 kWh
 		  {"77070100100700ff", 0,
-		   CreateSensor("Active Power", kWatt, "power", STATE_CLASS_MEASUREMENT, 0),
+		   CreateSensor(kActivePower, kActivePowerObjId, kWatt, "power", STATE_CLASS_MEASUREMENT, 0),
 		   /*max_expected_change=*/5000.,
 		   [this](const SmlValue& status, SmlValue& value) {
 			   if (power_direction_ == kOut) {
@@ -273,22 +298,22 @@ class HolleyDtz541SmlComponent : public Component, public UARTDevice {
 			   }
 		   }},
 		  {"77070100340700ff", /*scaler=*/0,
-		   CreateSensor("Voltage L1", kVolt, kVoltage, STATE_CLASS_MEASUREMENT, 2)},
+		   CreateSensor(kVoltageL1, kVoltageL1ObjId, kVolt, kVoltage, STATE_CLASS_MEASUREMENT, 2)},
 		  {"77070100340700ff", /*scaler=*/0,
-		   CreateSensor("Voltage L2", kVolt, kVoltage, STATE_CLASS_MEASUREMENT, 2)},
+		   CreateSensor(kVoltageL2, kVoltageL2ObjId, kVolt, kVoltage, STATE_CLASS_MEASUREMENT, 2)},
 		  {"77070100480700ff", /*scaler=*/0,
-		   CreateSensor("Voltage L3", kVolt, kVoltage, STATE_CLASS_MEASUREMENT, 2)},
+		   CreateSensor(kVoltageL3, kVoltageL3ObjId, kVolt, kVoltage, STATE_CLASS_MEASUREMENT, 2)},
 		  {"770701001f0700ff", /*scaler=*/0,
-		   CreateSensor("Amperage L1", kAmpere, kCurrent, STATE_CLASS_MEASUREMENT, 2)},
+		   CreateSensor(kAmperageL1, kAmperageL1ObjId, kAmpere, kCurrent, STATE_CLASS_MEASUREMENT, 2)},
 		  {"77070100330700ff", /*scaler=*/0,
-		   CreateSensor("Amperage L2", kAmpere, kCurrent, STATE_CLASS_MEASUREMENT, 2)},
+		   CreateSensor(kAmperageL2, kAmperageL2ObjId, kAmpere, kCurrent, STATE_CLASS_MEASUREMENT, 2)},
 		  {"77070100470700ff", /*scaler=*/0,
-		   CreateSensor("Amperage L3", kAmpere, kCurrent, STATE_CLASS_MEASUREMENT, 2)},
+		   CreateSensor(kAmperageL3, kAmperageL3ObjId, kAmpere, kCurrent, STATE_CLASS_MEASUREMENT, 2)},
 		  {"770701000e0700ff", /*scaler=*/0,
-		   CreateSensor("Frequency", kHz, kFrequency, STATE_CLASS_MEASUREMENT, 1)}
+		   CreateSensor(kFrequencySensor, kFrequencySensorObjId, kHz, kFrequency, STATE_CLASS_MEASUREMENT, 1)}
 	  };
 
-	  invalid_data_sensor_ = CreateSensor("Invalid Data", "", "", STATE_CLASS_TOTAL, 0);
+	  invalid_data_sensor_ = CreateSensor(kInvalidData, kInvalidDataObjId, "", "", STATE_CLASS_TOTAL, 0);
   }
 
   void setup() override {
@@ -432,12 +457,17 @@ class HolleyDtz541SmlComponent : public Component, public UARTDevice {
 		invalid_data_sensor_->publish_state(invalid_data_counter_);
 	}
 
-	Sensor* CreateSensor(const std::string& name,
+	// name is stored as a reference and must exits for as long as the sensor does.
+	Sensor* CreateSensor(const char* name,
+	                     const char* object_id,
 	                     const std::string& unit,
 	                     const std::string& device_class,
 	                     StateClass state_class,
 	                     int8_t accuracy_decimals) {
-		Sensor* sensor = new Sensor(name);
+		Sensor* sensor = new Sensor();
+		sensor->set_name(name);
+		// Required (and possible) only with ESPHome 2023.4.0 and later
+		sensor->set_object_id(object_id);
 		sensor->set_unit_of_measurement(unit);
 		sensor->set_device_class(device_class);
 		sensor->set_state_class(state_class);
