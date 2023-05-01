@@ -14,3 +14,7 @@ I use an ESP8266 based D1 Mini Pro in a
 
 This configuration uses only built-in ESPHome capabilities.
 
+<p align="center">
+  <img src="water_meter.jpg?raw=true" alt="Water meter with inductive sensor and D1 Mini Pro"/>
+</p>
+

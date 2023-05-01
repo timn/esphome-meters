@@ -13,3 +13,7 @@ I use an ESP8266 based D1 mini in a
 
 This configuration uses only built-in ESPHome capabilities.
 
+<p align="center">
+  <img src="gas_meter.jpg?raw=true" alt="Gas meter with inductive sensor and D1 Mini"/>
+</p>
+

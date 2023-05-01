@@ -13,3 +13,8 @@ info from libsml, and Tasmota. It uses a similar pattern matching approach to
 Tasmota.
 
 I found this not to work with the DTZ541-ZDBA (two tarriff counter).
+
+<p align="center">
+  <img src="power_meter.jpg?raw=true" alt="Power meter with IR comm head and ESP32 DevKitC"/>
+</p>
+
