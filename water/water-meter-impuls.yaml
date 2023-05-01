@@ -1,0 +1,137 @@
+esp8266:
+  board: d1_mini
+  restore_from_flash: true
+
+substitutions:
+  # This is used for the pulse filter to debounce the sensor values.
+  # This was measure empirically, the maximum I could get was 2 sec from one
+  # impulse to the next, with 800ms I had only few bounces (tbd).
+  min_activation_duration: 800ms
+
+esphome:
+  name: water-meter-impuls
+  friendly_name: Water Meter Impuls
+
+  on_boot:
+    then:
+    - pulse_meter.set_total_pulses:
+        id: water_pulse_counter
+        value: !lambda "return id(water_total_pulses);"
+    - logger.log:
+        format: "Restored pulses %d, total %.3f"
+        args: [ 'id(water_total_pulses)', 'id(water_total).state' ]
+  on_shutdown:
+    then:
+    - globals.set:
+        id: water_total_pulses
+        value: !lambda "return id(water_total).raw_state;"
+    - logger.log:
+        format: "Stored pulses %d, total %.3f"
+        args: [ 'id(water_total_pulses)', 'id(water_total).state' ]
+
+preferences:
+  flash_write_interval: 15 minutes
+
+# Enable logging
+logger:
+
+# Enable Home Assistant API
+api:
+  encryption:
+    key: !secret api_encryption_watermeter
+
+  services:
+    - service: set_water_total
+      variables:
+        l: float
+      then:
+      - pulse_meter.set_total_pulses:
+          id: water_pulse_counter
+          value: !lambda return l * 1;
+
+ota:
+  password: !secret ota_password
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+
+globals:
+  - id: water_total_pulses
+    type: int
+    restore_value: true
+    # You can set this to a value to have a meaningful value from the start
+    # Remove again when reflashing.
+    # initial_value: "0"
+
+binary_sensor:
+  - platform: gpio
+    id: internal_pulse_counter
+    pin:
+      number: GPIO5
+      mode:
+        input: true
+        pullup: true
+    name: "Live Impuls"
+    filters:
+      - delayed_on: $min_activation_duration
+    on_press:
+      then:
+        - output.turn_on: led
+    on_release:
+      then:
+        - output.turn_off: led
+
+sensor:
+  # This is configured for a water meter with 1 impulse per L.
+  - platform: pulse_meter
+    id: water_pulse_counter
+    pin:
+      number: GPIO5
+      mode:
+        input: true
+        pullup: true
+    unit_of_measurement: L/hour
+    name: Water usage
+    internal_filter: $min_activation_duration
+    internal_filter_mode: PULSE
+    accuracy_decimals: 1
+    filters:
+      - lambda: return x * (60.0 / 1);
+    total:
+      name: Water total
+      id: water_total
+      unit_of_measurement: L
+      accuracy_decimals: 0
+      state_class: "total_increasing"
+      icon: mdi:water
+      device_class: water
+      filters:
+        - lambda: |-
+            id(water_total_pulses) = x;
+            return (x * 1.0) / 1;
+
+  - platform: wifi_signal # Reports the WiFi signal strength/RSSI in dB
+    name: "WiFi Signal dB"
+    id: wifi_signal_db
+    update_interval: 60s
+    entity_category: "diagnostic"
+
+  - platform: copy # Reports the WiFi signal strength in %
+    source_id: wifi_signal_db
+    name: "WiFi Signal Percent"
+    filters:
+      - lambda: return min(max(2 * (x + 100.0), 0.0), 100.0);
+    unit_of_measurement: "%"
+    entity_category: "diagnostic"
+
+# Sync LED to live impulse
+output:
+  - platform: gpio
+    pin:
+      # This is the builtin LED
+      number: GPIO2
+      inverted: true
+    id: 'led'
+
+
