@@ -18,3 +18,14 @@ This configuration uses only built-in ESPHome capabilities.
   <img src="water_meter.jpg?raw=true" alt="Water meter with inductive sensor and D1 Mini Pro"/>
 </p>
 
+Board Schematic
+---------------
+
+Here is a simple schematic of the board layout I used. No active components,
+just wiring up the connector. I have used a angled pin header soldered into
+the second row of holes.
+
+<p align="center">
+  <img src="mini_tin_3pin_connector.png?raw=true" alt="Small mint tin perma-proto connections"/>
+</p>
+
