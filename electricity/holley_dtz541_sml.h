@@ -460,8 +460,8 @@ class HolleyDtz541SmlComponent : public Component, public UARTDevice {
 	// name is stored as a reference and must exits for as long as the sensor does.
 	Sensor* CreateSensor(const char* name,
 	                     const char* object_id,
-	                     const std::string& unit,
-	                     const std::string& device_class,
+	                     const char* unit,
+	                     const char* device_class,
 	                     StateClass state_class,
 	                     int8_t accuracy_decimals) {
 		Sensor* sensor = new Sensor();
